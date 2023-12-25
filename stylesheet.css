@@ -1,0 +1,15 @@
+.stocks_div { 
+    max-width:95%;
+    width:95%;
+    height:95%;
+    background-color:rgba(0, 255, 0, 0.3);
+    margin:auto;
+}
+
+.flex-row { 
+    display:flex; 
+    flex-direction:row;
+    margin-top:5%;
+    height:90vh;
+    background-color: rgba(0, 0, 255, 0.3);
+}
