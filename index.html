@@ -10,7 +10,8 @@
 
 <body style="background-color:rgba(0, 0, 0, 0.84);">
     <div class="flex-col">
-        <h1 class="heading-text">ELT Pipeline: S&P 500</h1>
+        <h1 class="heading-text">S&P 500 ELT Pipeline</h1>
+        <p class="intro-text">This webpage hosts the dashboard that results from an automated end-to-end ELT Pipeline built using AWS, Github, and Plotly's Python graphing library.</p>
         <p class="intro-text"> The diagram below is updated every day to display the biggest growers and biggest losers among the 
             S&P 500 stocks for three different time periods relative to today: previous day, month, and year. More details and background
             on how this diagram is constructed is given below.
@@ -25,22 +26,28 @@
     allowtransparency
 ></iframe>
     </div>
+    <div class="main-body-text">
+        <p>The data above are the closing prices for the S&P 500 stocks during regular trading hours for the U.S. stock market: 9:30am to 4pm EST, Monday through Friday. Data from Pre-Market and After-Hours stock trading are not displayed here.</p>
+        <p>The granularity of the data is different for each of the three intervals. The granularity for each of the three intervals (day, month, year) is as follows: 15 mins, 1 day, 1 week.</p>
+        <p> The provider for this data comes from the <a href="https://github.com/ranaroussi/yfinance">yfinance api</a>. yfinance offers a threaded and Pythonic way to download market data from Yahoo! finance.</p>
     </div>
-    <h2 class="heading-text" style="margin-top:15vh;">How It's Made</h2>
+    </div>
+    <h2 class="heading-text" style="margin-top:20vh;">How It's Made</h2>
         <div class="image-container">
         <img src="images/ELTPIPELINE_image.jpg" style="max-width:100%;max-height:100%;">
         </div>
         <div class="main-body-text">
-            <p style="text-align:center"> The provider for this data comes from the <a href="https://github.com/ranaroussi/yfinance">yfinance api</a></p>
             <p style="text-align:center"> This pipeline is automated with AWS services, taking advantage of the numerous free tier services provided by AWS. </p>
             <br>
             <p>Several python scripts were created and containerized with Docker, and then these container images were published to the Amazon Elastic Container Registry (AWS ECR) to create AWS lambda functions from them.</p>
             <p>A schedule was created with AWS EventBridge Scheduler that begins this pipeline everyday at 9:30pm EST by invoking an AWS lambda function. This lambda function then starts the AWS RDS postgresql database instance and publishes a message to an AWS SNS topic. The next lambda function in the sequence is subscribed to this topic and thus begins running once this message is recieved.</p>
             <p>The 2nd lambda function then extracts data from the yfinance api, parses this data to compute the biggest growers and losers, loads this data to the AWS RDS database, and publishes to a new SNS topic to begin the execution of the next lambda function.</p>
             <p> The 3rd lambda function connects to this database, uses this data to create the diagram above, and updates the github repo for this project with this new updated diagram.</p>
-            <br>
-            <p> The diagram above is created with the <a href="https://plotly.com/python/">Plotly</a> Python Library. This library can make very nice visuals, allows for easy data exports with offline html files, and it's free! I found it much more convenient to use this library as opposed to regular BI tools, which usually require a subscription in order to export/share visuals.</p>
             <p>The last AWS lambda function simply stops the database instance, so it remains inactive until the next pipeline execution cycle resumes it.</p>
+            <br>
+            <p> The stocks dasboard above is created with the <a href="https://plotly.com/python/">Plotly</a> Python Library. This library can make very nice visuals, allows for easy data exports with offline html files, and it's free! I found it much more convenient to use this library as opposed to regular BI tools, which typically require a subscription in order to export/share visuals.</p>
+            <br>
+            <p></p>
         </div>
 </body>
 </html>
